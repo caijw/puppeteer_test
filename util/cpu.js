@@ -23,7 +23,7 @@ exports.parseTaskset = function (str) {
 		if(end < start){
 			end = start;
 		}
-		for(let i = start, i <= end; ++i){
+		for(let i = start; i <= end; ++i){
 			res.push(i);
 		}
 	});
@@ -32,7 +32,8 @@ exports.parseTaskset = function (str) {
 
 exports.taskset = function (oriCpu, pid) {
 	console.log(`taskset -cp ${pid}`);
-	cp.exec(`taskset -cp ${pid}`, m{
+	return;
+	cp.exec(`taskset -cp ${pid}`, {
 		timeout: 5000
 	}, function (err, data, errData) {
 		const str = data;

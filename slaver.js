@@ -1,9 +1,10 @@
 const http = require('http');
 let handler = require('./handler.js');
-const host = '0.0.0.0';
+const host = '127.0.0.1';
 const port = 3334;
 
 let server = http.createServer(function (req, res) {
+	console.log(`process pid: ${process.pid}, handle request`);
 	handler(req, res);
 });
 

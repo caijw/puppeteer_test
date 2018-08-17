@@ -20,7 +20,7 @@ process.on('warning', function (warning) {
 
 function run() {
     if(cluster.isMaster){
-        cluster.run();
+        master.run();
     }else{
         slaver.run();
     }

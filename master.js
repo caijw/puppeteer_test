@@ -4,6 +4,7 @@ const cpuUtil = require('./util/cpu.js');
 const admin = require('./admin.js');
 
 let cpuMap = [];
+let workerMap = {};
 
 function getBindCpu(worker) {
 	if(typeof worker.cpuid !== 'undefined'){
@@ -23,7 +24,7 @@ function masterEventHandler() {
 	cluster.on('fork', function (curWorker) {
 		let cpu = getBindCpu(curWorker);
 		console.log(`worker fork success! pid:${curWorker.process.pid}, cpu: ${cpu}`);
-		cpuUtil.taskSet(cpu, curWorker.process.pid);
+		cpuUtil.taskset(cpu, curWorker.process.pid);
 		if(workerMap[cpu]){
 			closeWorker(workerMap[cpu]);
 		}
@@ -104,7 +105,7 @@ function closeWorker(worker) {
 			try{
 				process.kill(pid, 9);
 			}catch(e){
-				console.log(`kill worker message: ${e.message}`);
+				console.log(`kill worker ${process.pid} message: ${e.message}`);
 			}
 			closed = true;
 			worker.destroy();
@@ -135,6 +136,7 @@ function restartWorker(worker) {
 
 exports.run = function () {
 	console.log(`start master...`);
+	console.log(`process pid: ${process.pid}`);
 	let numCpus = os.cpus().length;
 	for(let i = 0; i < numCpus; ++i){
 		cpuMap.push(0);
