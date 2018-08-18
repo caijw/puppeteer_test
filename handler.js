@@ -35,22 +35,22 @@ const cluster = require('cluster');
 
 if (cluster.isWorker) {
     
-    console.log(`process ${process.pid}: add disconnect event`);
-    cluster.worker.on('disconnect', async _ => {
-        console.log(`process ${process.pid}: disconnect`);
-    })
-    console.log(`process ${process.pid}: add exit event`);
-    cluster.worker.on('exit', async _ => {
-        console.log(`process ${process.pid}: exit`);
+    // console.log(`process ${process.pid}: add disconnect event`);
+    // cluster.worker.on('disconnect', async _ => {
+    //     console.log(`process ${process.pid}: disconnect`);
+    // })
+    // console.log(`process ${process.pid}: add exit event`);
+    // cluster.worker.on('exit', async _ => {
+    //     console.log(`process ${process.pid}: exit`);
 
-    })
+    // })
 
-    console.log(`process ${process.pid}: add beforeExit event`);
-    cluster.worker.on('beforeExit', async function () {
-    	/*监听master的restart通知，关闭chrome进程*/
-    	console.log(`process pid: ${process.pid}, beforeExit`);
-    });
-    
+    // console.log(`process ${process.pid}: add beforeExit event`);
+    // cluster.worker.on('beforeExit', async function () {
+    // 	/*监听master的restart通知，关闭chrome进程*/
+    // 	console.log(`process pid: ${process.pid}, beforeExit`);
+    // });
+
 
     console.log(`process ${process.pid}: add restart event`);
     process.on('restart', async function () {
@@ -73,6 +73,10 @@ if (cluster.isWorker) {
     process.on('beforeExit', async function () {
     	/*监听master的restart通知，关闭chrome进程*/
     	console.log(`process pid: ${process.pid}, beforeExit`);
+    });
+    console.log(`process ${process.pid}: add closing event`);
+    process.on('closing', function () {
+    	console.log(`process pid: ${process.pid}, closing`);
     });
 }
 // console.log(`process ${process.pid} cluster: add disconnect event`);

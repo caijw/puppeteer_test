@@ -42,13 +42,9 @@ function masterEventHandler() {
 			cpu: cpu
 		});
 		setTimeout(function () {
-			try{
-				process.kill(curWorker.process.pid, 9);
-			}catch(e){
-				console.log(`try kill worker ${process.pid} message: ${e.message}`);
-			}
+			closeWorker(curWorker);
+		}, 0);
 
-		}, 5000);
 	});
 	/*子进程退出*/
 	cluster.on('disconnect', function (worker) {
@@ -95,7 +91,7 @@ function masterEventHandler() {
 
 function closeWorker(worker) {
 	let cpu = worker.cpuid;
-	let closeTimeWait = 10000;
+	let closeTimeWait = 4000;
 	if(worker.isClosing){
 		return;
 	}
@@ -110,13 +106,21 @@ function closeWorker(worker) {
 			if(closed){
 				return;
 			}
-			try{
-				process.kill(pid, 9);
-			}catch(e){
-				console.log(`kill worker ${process.pid} message: ${e.message}`);
-			}
-			closed = true;
-			worker.destroy();
+			worker.send({
+				from: 'master',
+				cmd: 'closing',
+				cpu: cpu
+			});
+			setTimeout(function () {
+				try{
+					process.kill(pid, 9);
+				}catch(e){
+					console.log(`kill worker ${process.pid} message: ${e.message}`);
+				}
+				closed = true;
+				worker.destroy();
+			}, 1000);
+
 		}
 	})(worker);
 	setTimeout(closeFn, closeTimeWait);
