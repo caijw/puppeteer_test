@@ -1,8 +1,8 @@
 const cluster = require('cluster');
 const http = require('http');
 
-const master = require('./master.js');
-const slaver = require('./slaver.js');
+
+
 
 process.on('uncaugthException', function (e) {
     console.error('uncaugthException');
@@ -20,8 +20,10 @@ process.on('warning', function (warning) {
 
 function run() {
     if(cluster.isMaster){
+    	const master = require('./master.js');
         master.run();
     }else{
+    	const slaver = require('./slaver.js');
         slaver.run();
     }
 }

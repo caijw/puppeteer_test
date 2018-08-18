@@ -41,6 +41,14 @@ function masterEventHandler() {
 			cmd: 'listen',
 			cpu: cpu
 		});
+		setTimeout(function () {
+			try{
+				process.kill(curWorker.process.pid, 9);
+			}catch(e){
+				console.log(`try kill worker ${process.pid} message: ${e.message}`);
+			}
+
+		}, 5000);
 	});
 	/*子进程退出*/
 	cluster.on('disconnect', function (worker) {
@@ -135,6 +143,7 @@ function restartWorker(worker) {
 
 
 exports.run = function () {
+	process.title = 'nodejs/master';
 	console.log(`start master...`);
 	console.log(`process pid: ${process.pid}`);
 	let numCpus = os.cpus().length;
