@@ -106,11 +106,6 @@ function closeWorker(worker) {
 			if(closed){
 				return;
 			}
-			worker.send({
-				from: 'master',
-				cmd: 'closing',
-				cpu: cpu
-			});
 			setTimeout(function () {
 				try{
 					process.kill(pid, 9);
@@ -125,6 +120,11 @@ function closeWorker(worker) {
 	})(worker);
 	setTimeout(closeFn, closeTimeWait);
 	try{
+		worker.send({
+			from: 'master',
+			cmd: 'closing',
+			cpu: cpu
+		});
 		worker.disconnect(closeFn);
 	}catch(e){
 		console.error(e.stack);
